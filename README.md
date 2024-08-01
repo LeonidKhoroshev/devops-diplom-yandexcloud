@@ -259,6 +259,29 @@ variable "nat" {
   default     = "true"
 }
 ```
+Для всех виртуальных машин используется `cloud-init.yaml` следующей конфигурации:
+```yml
+#cloud-config
+users:
+  - name: leo
+    ssh_authorized_keys:
+      - ssh-rsa <public_key>
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    groups: sudo
+    shell: /bin/bash
+package_update: true
+package_upgrade: true
+packages:
+  - nginx
+  - nano
+  - software-properties-common
+runcmd:
+  - mkdir -p /home/leo/.ssh
+  - chown -R leo:leo /home/leo/.ssh
+  - chmod 700 /home/leo/.ssh
+  - sudo add-apt-repository ppa:deadsnakes/ppa -y
+  - sudo apt-get update
+```
    б. Подготовить [ansible](https://www.ansible.com/) конфигурации, можно воспользоваться, например [Kubespray](https://kubernetes.io/docs/setup/production-environment/tools/kubespray/)  
    в. Задеплоить Kubernetes на подготовленные ранее инстансы, в случае нехватки каких-либо ресурсов вы всегда можете создать их при помощи Terraform.
 2. Альтернативный вариант: воспользуйтесь сервисом [Yandex Managed Service for Kubernetes](https://cloud.yandex.ru/services/managed-kubernetes)  
