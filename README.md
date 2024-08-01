@@ -289,7 +289,7 @@ runcmd:
   а. С помощью terraform resource для [kubernetes](https://registry.terraform.io/providers/yandex-cloud/yandex/latest/docs/resources/kubernetes_cluster) создать **региональный** мастер kubernetes с размещением нод в разных 3 подсетях      
   б. С помощью terraform resource для [kubernetes node group](https://registry.terraform.io/providers/yandex-cloud/yandex/latest/docs/resources/kubernetes_node_group)
 
-Альтернативный вариант рассмотрен в одном из [домашних заданий](https://github.com/LeonidKhoroshev/clopro-homeworks/blob/main/15.4.md), где бул подготовлен соответствующий [манифест](https://github.com/LeonidKhoroshev/clopro-homeworks/blob/hw-15.4.1/main.tf), но для выполнения дипломного проекта готовый кластер `Yandex Managed Service for Kubernetes` дороже подготовленного ы ручную в варианте 1.
+Альтернативный вариант рассмотрен в одном из [домашних заданий](https://github.com/LeonidKhoroshev/clopro-homeworks/blob/main/15.4.md), где бул подготовлен соответствующий [манифест](https://github.com/LeonidKhoroshev/clopro-homeworks/blob/hw-15.4.1/main.tf), но для выполнения дипломного проекта готовый кластер `Yandex Managed Service for Kubernetes` дороже подготовленного самостоятельно в варианте 1.
   
 Ожидаемый результат:
 
