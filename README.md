@@ -41,6 +41,53 @@
    а. Рекомендуемый вариант: S3 bucket в созданном ЯО аккаунте(создание бакета через TF)
    б. Альтернативный вариант:  [Terraform Cloud](https://app.terraform.io/)  
 3. Создайте VPC с подсетями в разных зонах доступности.
+
+```tf
+resource "yandex_vpc_network" "my_vpc" {
+  name = var.VPC_name
+}
+
+resource "yandex_vpc_subnet" "public_subnet" {
+  count = length(var.public_subnet_zones)
+  name  = "${var.public_subnet_name}-${var.public_subnet_zones[count.index]}"
+  v4_cidr_blocks = [
+    cidrsubnet(var.public_v4_cidr_blocks[0], 4, count.index)
+  ]
+  zone       = var.public_subnet_zones[count.index]
+  network_id = yandex_vpc_network.my_vpc.id
+}
+```
+К терраформ коду указываем следующие переменные:
+```tf
+### vpc vars
+
+variable "VPC_name" {
+  type        = string
+  default     = "my-vpc"
+}
+
+### subnet vars
+
+variable "public_subnet_name" {
+  type        = string
+  default     = "public"
+}
+
+variable "public_v4_cidr_blocks" {
+  type        = list(string)
+  default     = ["192.168.10.0/24"]
+}
+
+variable "subnet_zone" {
+  type        = string
+  default     = "ru-central1"
+}
+
+variable "public_subnet_zones" {
+  type    = list(string)
+  default = ["ru-central1-a", "ru-central1-b",  "ru-central1-d"]
+}
+```
 4. Убедитесь, что теперь вы можете выполнить команды `terraform destroy` и `terraform apply` без дополнительных ручных действий.
 5. В случае использования [Terraform Cloud](https://app.terraform.io/) в качестве [backend](https://www.terraform.io/docs/language/settings/backends/index.html) убедитесь, что применение изменений успешно проходит, используя web-интерфейс Terraform cloud.
 
@@ -57,7 +104,161 @@
 Это можно сделать двумя способами:
 
 1. Рекомендуемый вариант: самостоятельная установка Kubernetes кластера.  
-   а. При помощи Terraform подготовить как минимум 3 виртуальных машины Compute Cloud для создания Kubernetes-кластера. Тип виртуальной машины следует выбрать самостоятельно с учётом требовании к производительности и стоимости. Если в дальнейшем поймете, что необходимо сменить тип инстанса, используйте Terraform для внесения изменений.  
+   а. При помощи Terraform подготовить как минимум 3 виртуальных машины Compute Cloud для создания Kubernetes-кластера. Тип виртуальной машины следует выбрать самостоятельно с учётом требовании к производительности и стоимости. Если в дальнейшем поймете, что необходимо сменить тип инстанса, используйте Terraform для внесения изменений.
+
+В целях экономии выделенного бюджета и с учетом ресурсоемкости создадим кластер из одной control-plane ноды и двух worker нод.
+
+Конфиграция control-plane ноды:
+```tf
+resource "yandex_compute_instance" "control-plane" {
+  name            = var.control_plane_name
+  platform_id     = var.platform
+  resources {
+    cores         = var.control_plane_core
+    memory        = var.control_plane_memory
+    core_fraction = var.control_plane_core_fraction
+  }
+
+  boot_disk {
+    initialize_params {
+      image_id = var.image_id
+      size     = var.control_plane_disk_size
+    }
+  }
+
+  scheduling_policy {
+    preemptible = var.scheduling_policy
+  }
+
+  network_interface {
+    subnet_id = yandex_vpc_subnet.public_subnet[0].id
+    nat       = var.nat
+  }
+
+  metadata = {
+    user-data = "${file("/home/leo/kuber-homeworks/3.2/terraform/cloud-init.yaml")}"
+ }
+}
+```
+Переменные:
+```tf
+### control-plane node vars
+
+variable "control_plane_name" {
+  type        = string
+  default     = "control-plane"
+}
+
+variable "platform" {
+  type        = string
+  default     = "standard-v1"
+}
+
+variable "control_plane_core" {
+  type        = number
+  default     = "4"
+}
+
+variable "control_plane_memory" {
+  type        = number
+  default     = "8"
+}
+
+variable "control_plane_core_fraction" {
+  description = "guaranteed vCPU, for yandex cloud - 20, 50 or 100 "
+  type        = number
+  default     = "20"
+}
+
+variable "control_plane_disk_size" {
+  type        = number
+  default     = "50"
+}
+
+variable "image_id" {
+  type        = string
+  default     = "fd893ak78u3rh37q3ekn"
+}
+
+variable "scheduling_policy" {
+  type        = bool
+  default     = "true"
+}
+```
+Конфигурация worker нод:
+```tf
+resource "yandex_compute_instance" "worker" {
+  count           = var.worker_count
+  name            = "worker-node-${count.index + 1}"
+  platform_id     = var.worker_platform
+  zone = var.public_subnet_zones[count.index]
+  resources {
+    cores         = var.worker_cores
+    memory        = var.worker_memory
+    core_fraction = var.worker_core_fraction
+  }
+
+  boot_disk {
+    initialize_params {
+      image_id = var.image_id
+      size     = var.worker_disk_size
+    }
+  }
+
+    scheduling_policy {
+    preemptible = var.scheduling_policy
+  }
+
+  network_interface {
+    subnet_id = yandex_vpc_subnet.public_subnet[count.index].id
+    nat       = var.nat
+  }
+
+  metadata = {
+    user-data = "${file("/home/leo/diplom/terraform/cloud-init.yaml")}"
+ }
+}
+```
+Переменные:
+```tf
+### worker nodes vars
+
+variable "worker_count" {
+  type        = number
+  default     = "2"
+}
+
+variable "worker_platform" {
+  type        = string
+  default     = "standard-v1"
+}
+
+variable "worker_cores" {
+  type        = number
+  default     = "4"
+}
+
+variable "worker_memory" {
+  type        = number
+  default     = "2"
+}
+
+variable "worker_core_fraction" {
+  description = "guaranteed vCPU, for yandex cloud - 20, 50 or 100 "
+  type        = number
+  default     = "20"
+}
+
+variable "worker_disk_size" {
+  type        = number
+  default     = "50"
+}
+
+variable "nat" {
+  type        = bool
+  default     = "true"
+}
+```
    б. Подготовить [ansible](https://www.ansible.com/) конфигурации, можно воспользоваться, например [Kubespray](https://kubernetes.io/docs/setup/production-environment/tools/kubespray/)  
    в. Задеплоить Kubernetes на подготовленные ранее инстансы, в случае нехватки каких-либо ресурсов вы всегда можете создать их при помощи Terraform.
 2. Альтернативный вариант: воспользуйтесь сервисом [Yandex Managed Service for Kubernetes](https://cloud.yandex.ru/services/managed-kubernetes)  
