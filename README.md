@@ -106,9 +106,9 @@ variable "public_subnet_zones" {
 1. Рекомендуемый вариант: самостоятельная установка Kubernetes кластера.  
    а. При помощи Terraform подготовить как минимум 3 виртуальных машины Compute Cloud для создания Kubernetes-кластера. Тип виртуальной машины следует выбрать самостоятельно с учётом требовании к производительности и стоимости. Если в дальнейшем поймете, что необходимо сменить тип инстанса, используйте Terraform для внесения изменений.
 
-В целях экономии выделенного бюджета и с учетом ресурсоемкости создадим кластер из одной control-plane ноды и двух worker нод.
+В целях экономии выделенного бюджета и с учетом ресурсоемкости создадим кластер из одной `control-plane` ноды и двух `worker` нод.
 
-Конфиграция control-plane ноды:
+Конфиграция `control-plane` ноды:
 ```tf
 resource "yandex_compute_instance" "control-plane" {
   name            = var.control_plane_name
@@ -185,7 +185,7 @@ variable "scheduling_policy" {
   default     = "true"
 }
 ```
-Конфигурация worker нод:
+Конфигурация `worker` нод:
 ```tf
 resource "yandex_compute_instance" "worker" {
   count           = var.worker_count
@@ -282,11 +282,14 @@ runcmd:
   - sudo add-apt-repository ppa:deadsnakes/ppa -y
   - sudo apt-get update
 ```
-   б. Подготовить [ansible](https://www.ansible.com/) конфигурации, можно воспользоваться, например [Kubespray](https://kubernetes.io/docs/setup/production-environment/tools/kubespray/)  
+   б. Подготовить [ansible](https://www.ansible.com/) конфигурации, можно воспользоваться, например [Kubespray](https://kubernetes.io/docs/setup/production-environment/tools/kubespray/)
+  
    в. Задеплоить Kubernetes на подготовленные ранее инстансы, в случае нехватки каких-либо ресурсов вы всегда можете создать их при помощи Terraform.
 2. Альтернативный вариант: воспользуйтесь сервисом [Yandex Managed Service for Kubernetes](https://cloud.yandex.ru/services/managed-kubernetes)  
   а. С помощью terraform resource для [kubernetes](https://registry.terraform.io/providers/yandex-cloud/yandex/latest/docs/resources/kubernetes_cluster) создать **региональный** мастер kubernetes с размещением нод в разных 3 подсетях      
   б. С помощью terraform resource для [kubernetes node group](https://registry.terraform.io/providers/yandex-cloud/yandex/latest/docs/resources/kubernetes_node_group)
+
+Альтернативный вариант рассмотрен в одном из [домашних заданий](https://github.com/LeonidKhoroshev/clopro-homeworks/blob/main/15.4.md), где бул подготовлен соответствующий [манифест](https://github.com/LeonidKhoroshev/clopro-homeworks/blob/hw-15.4.1/main.tf), но для выполнения дипломного проекта готовый кластер `Yandex Managed Service for Kubernetes` дороже подготовленного ы ручную в варианте 1.
   
 Ожидаемый результат:
 
