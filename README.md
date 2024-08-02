@@ -157,6 +157,18 @@ variable "public_subnet_zones" {
 }
 ```
 4. Убедитесь, что теперь вы можете выполнить команды `terraform destroy` и `terraform apply` без дополнительных ручных действий.
+
+При выполнении команды `terraform destroy` удаляются все вычислительные ресурсы, кроме нашего бакета и загруженного в него `terraform.tfstate`, а также созданной нами сети `my-vpc` (лжидаемый результат).
+
+Применяем изменения и проверяем инфраструктуру
+```
+terraform apply
+terraform state list
+```
+
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom3.png)
+
+
 5. В случае использования [Terraform Cloud](https://app.terraform.io/) в качестве [backend](https://www.terraform.io/docs/language/settings/backends/index.html) убедитесь, что применение изменений успешно проходит, используя web-интерфейс Terraform cloud.
 
 Ожидаемые результаты:
