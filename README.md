@@ -105,6 +105,8 @@ terraform output s3_secret_key
 terraform init
 ```
 
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom1.png)
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom2.png)
 
 3. Создайте VPC с подсетями в разных зонах доступности.
 
