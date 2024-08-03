@@ -383,9 +383,9 @@ cp -rfp inventory/sample inventory/mycluster
 # ## different ip than the default iface
 # ## We should set etcd_member_name for etcd cluster. The node that is not a etcd member do not need to set the value, or can set the empty string value.
 [all]
-node1 ansible_host=51.250.71.251  # ip=192.168.10.7  etcd_member_name=etcd1
-node2 ansible_host=84.201.174.252 # ip=192.168.10.10 etcd_member_name=etcd2
-node3 ansible_host=89.169.166.190 # ip=192.168.10.19 etcd_member_name=etcd3
+node1 ansible_host=51.250.71.251   ansible_user=leo ansible_ssh_private_key_file=~/.ssh/id_rsa # ip=192.168.10.7  etcd_member_name=etcd1
+node2 ansible_host=84.201.174.252  ansible_user=leo ansible_ssh_private_key_file=~/.ssh/id_rsa # ip=192.168.10.10 etcd_member_name=etcd2
+node3 ansible_host=89.169.166.190  ansible_user=leo ansible_ssh_private_key_file=~/.ssh/id_rsa # ip=192.168.10.19 etcd_member_name=etcd3
 # node4 ansible_host=95.54.0.15   # ip=10.3.0.4 etcd_member_name=etcd4
 # node5 ansible_host=95.54.0.16   # ip=10.3.0.5 etcd_member_name=etcd5
 # node6 ansible_host=95.54.0.17   # ip=10.3.0.6 etcd_member_name=etcd6
