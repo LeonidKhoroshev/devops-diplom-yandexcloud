@@ -434,8 +434,26 @@ ansible-playbook -i inventory/mycluster/inventory.ini cluster.yml -b -v
 Ожидаемый результат:
 
 1. Работоспособный Kubernetes кластер.
-2. В файле `~/.kube/config` находятся данные для доступа к кластеру.
-3. Команда `kubectl get pods --all-namespaces` отрабатывает без ошибок.
+Подключаемся к `control-plane` ноде 
+```
+ssh leo@51.250.71.251
+```
+Проверяем, что кластер состоит из одной `control-plane` ноды и двух `worker` нод
+```
+kubectl get nodes
+```
+
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom6.png)
+3. В файле `~/.kube/config` находятся данные для доступа к кластеру.
+```
+cat ~/.kube/config
+```
+
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom5.png)
+
+4. Команда `kubectl get pods --all-namespaces` отрабатывает без ошибок.
+
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom7.png)
 
 ---
 ### Создание тестового приложения
