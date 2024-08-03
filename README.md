@@ -521,6 +521,8 @@ grafana:
 helm upgrade prometheus prometheus-community/kube-prometheus-stack -n monitoring -f values.yml
 ```
 
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom9.png)
+
 2. Задеплоить тестовое приложение, например, [nginx](https://www.nginx.com/) сервер отдающий статическую страницу.
 
 Способ выполнения:
