@@ -546,7 +546,7 @@ helm upgrade prometheus prometheus-community/kube-prometheus-stack -n monitoring
 2. Http доступ к web интерфейсу grafana.
 3. Дашборды в grafana отображающие состояние Kubernetes кластера.
 4. Http доступ к тестовому приложению.
-
+   
 ---
 ### Установка и настройка CI/CD
 
