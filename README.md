@@ -463,8 +463,36 @@ cat ~/.kube/config
 Способ подготовки:
 
 1. Рекомендуемый вариант:  
-   а. Создайте отдельный git репозиторий с простым nginx конфигом, который будет отдавать статические данные.  
+   а. Создайте отдельный git репозиторий с простым nginx конфигом, который будет отдавать статические данные.
+
+В соответствии с рекомендуемым вариантом создан репозиторий [nginx-static](https://github.com/LeonidKhoroshev/nginx-static/tree/main)
+
+Далее копируем репозиторий на виртуальную машину в одноименную директорию
+```
+git init
+git clone https://github.com/LeonidKhoroshev/nginx-static.git
+```
+Создаем внутри проекта директорию `static` и в ней указываем конфигурацию файла основной стартовой страницы [index.html](https://github.com/LeonidKhoroshev/nginx-static/blob/main/static/index.html) и [styles.css](https://github.com/LeonidKhoroshev/nginx-static/blob/main/static/styles.css), созданного для улучшения внешнего вида нашей веб-страницы. Также создаем директорию [images](https://github.com/LeonidKhoroshev/nginx-static/tree/main/images) для хранения там фоновой картинки.
+  
    б. Подготовьте Dockerfile для создания образа приложения.  
+
+Переходим в корневую директорию и создаем `Dockerfile` следующей конфигурации
+```
+FROM nginx:latest
+
+COPY ./static /usr/share/nginx/html
+
+EXPOSE 80
+``
+Сохраняем изменения в ветке `main` нашего репозитория:
+```
+git add .
+git commit -m "first commit"
+git push https://github.com/LeonidKhoroshev/nginx-static main
+```
+
+
+
 2. Альтернативный вариант:  
    а. Используйте любой другой код, главное, чтобы был самостоятельно создан Dockerfile.
 
