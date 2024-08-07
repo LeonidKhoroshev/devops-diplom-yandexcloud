@@ -628,7 +628,7 @@ kubectl get pods -l app=nginx-static
 ```
 
 ![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom15.png)
-![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom15.png)
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom16.png)
 
 
 
