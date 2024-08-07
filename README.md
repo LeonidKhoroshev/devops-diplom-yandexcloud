@@ -490,8 +490,22 @@ git add .
 git commit -m "first commit"
 git push https://github.com/LeonidKhoroshev/nginx-static main
 ```
+Далее авторизовываемся на [DockerHub](https://hub.docker.com) и в консоли и собираем `docker` образ
+```
+docker login
+docker build -t leonid1984/nginx-static:latest .
+```
 
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom12.png)
 
+И размещаем его в нашем хранилище на `DockerHub`
+```
+docker push leonid1984/nginx-static:latest
+```
+
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom13.png)
+
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom14.png)
 
 2. Альтернативный вариант:  
    а. Используйте любой другой код, главное, чтобы был самостоятельно создан Dockerfile.
