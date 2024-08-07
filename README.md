@@ -483,7 +483,7 @@ FROM nginx:latest
 COPY ./static /usr/share/nginx/html
 
 EXPOSE 80
-``
+```
 Сохраняем изменения в ветке `main` нашего репозитория:
 ```
 git add .
