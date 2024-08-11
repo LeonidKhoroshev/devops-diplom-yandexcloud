@@ -710,6 +710,8 @@ http://89.169.145.151:32002/
 
 Также необходимо настроить `Docker Credentials`  в веб-интерфейсе `Jenkins`.
 
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom20.png)
+
 
 
 Ожидаемый результат:
