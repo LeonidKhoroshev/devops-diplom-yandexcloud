@@ -701,6 +701,11 @@ kubectl logs jenkins-cf789dc4d-l2v56 --namespace=devops-tools
 
 ![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom19.png)
 
+Далее осуществляем стандартную настройку `Jenkins`, указывая логин, пароль и электронную почту в соответствующих пунктах меню. Далее копирую ссылку url для быстрого доступа (для упрощения задания ip адреса виртуальных машин, участвующих в проекте сделаны статическими). 
+```
+http://89.169.145.151:32002/
+```
+
 
 Ожидаемый результат:
 
