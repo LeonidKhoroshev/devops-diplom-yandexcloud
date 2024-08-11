@@ -655,6 +655,53 @@ kubectl get pods -l app=nginx-static
 
 Можно использовать [teamcity](https://www.jetbrains.com/ru-ru/teamcity/), [jenkins](https://www.jenkins.io/), [GitLab CI](https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/) или GitHub Actions.
 
+Для настройки CI/CD процессов нашего проекта выбран `Jenkins` как наиболее широко применяемое open-source решение. Ранее в соответствующем модуле обучения установка `Jenkins` была описана посредством  создания двух виртуальных машин `jenkins-master` и `jenkins-agent` на базе следующего [кода terraform](https://github.com/LeonidKhoroshev/terraform-team). В целях экономии вычислительных ресурсов, а также общей архитектуры и логики работы нашей инфраструктуры в данном задании выбран вариант запуска `Jenkins` в k8s по следующей [инструкции](https://www.jenkins.io/doc/book/installing/kubernetes/).
+
+Копируем репозиторий
+```
+git clone https://github.com/scriptcamp/kubernetes-jenkins
+```
+Создаем новое пространство имен, чтобы было проще отслеживать работу подов и сервисов
+```
+kubectl create namespace devops-tools
+```
+Создаем сервисный аккаунт для `Jenkins`, оставляя без изменений файл `serviceAccount.yaml` из скачанного репозитория
+```
+kubectl apply -f serviceAccount.yaml
+```
+Указываем в `deployment.yaml` отсутсвие необходимости в томах постоянного хранения данных
+```yml
+volumes:
+- name: jenkins-data
+  emptyDir: {}
+```
+Применяем изменения и проверяем успешный запуск `Jenkins`
+```
+kubectl apply -f deployment.yaml
+kubectl get deployments -n devops-tools
+kubectl get pods -n devops-tools
+```
+
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom17.png)
+
+Далее создаем соответствующий сервис. Незначительно корректируем дефортный файл `service.yaml` из скачанного [репозитория](https://github.com/scriptcamp/kubernetes-jenkins), указав `nodePort: 32002`, так как дефолтный порт `32000` уже занят мониторингом (Grafana), а на порту `32001` работает наш сервер `nginx`.
+
+Запускаем сервис
+```
+kubectl apply -f service.yaml
+```
+Для первого входа через веб-интерфейс определяем пароль
+```
+kubectl logs jenkins-cf789dc4d-l2v56 --namespace=devops-tools
+```
+
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom18.png)
+
+Входим в графический интерфейс и устанавливаем плагины, предлагаемые `Jenkins`
+
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom19.png)
+
+
 Ожидаемый результат:
 
 1. Интерфейс ci/cd сервиса доступен по http.
