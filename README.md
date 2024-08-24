@@ -669,14 +669,60 @@ kubectl create namespace devops-tools
 ```
 kubectl apply -f serviceAccount.yaml
 ```
-Указываем в `deployment.yaml` отсутсвие необходимости в томах постоянного хранения данных
+Указываем в `deployment.yaml` том постоянного хранения данных (настройки пользователя, пайплайны и т.д., так как наш кластер использует ради экономии прерываемые виртуальные машины).
 ```yml
+volumeMounts:
+   - name: jenkins-data
+     mountPath: /var/jenkins_home
 volumes:
-- name: jenkins-data
-  emptyDir: {}
+   - name: jenkins-data
+     persistentVolumeClaim:
+     claimName: jenkins-pvc
 ```
+И соответственно создаем требуемый `persistent volume`
+```yml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jenkins-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: "/var/jenkins_home"
+```
+А также `persistent volume claim`
+```yml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jenkins-pvc
+  namespace: devops-tools
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+```
+Для корректной работы необходимо создать директорию `/var/jenkins_home` на всех нодах нашего кластера, для чего необходимо в `deployment.yaml` добавить инитконтейнер, создающий даннцю директорию и наделяющую ее соответствующими правами
+```yml
+ initContainers:
+   - name: init-chown-data
+     image: alpine
+     command: ['sh', '-c', 'mkdir -p /var/jenkins_home && chown -R 1000:1000 /var/jenkins_home']
+     volumeMounts:
+     - name: jenkins-data
+       mountPath: /var/jenkins_home
+```
+
 Применяем изменения и проверяем успешный запуск `Jenkins`
 ```
+kubectl apply -f pv.yaml
+kubectl apply -f pvc.yaml
 kubectl apply -f deployment.yaml
 kubectl get deployments -n devops-tools
 kubectl get pods -n devops-tools
