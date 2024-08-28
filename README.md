@@ -374,7 +374,7 @@ runcmd:
   - sudo add-apt-repository ppa:deadsnakes/ppa -y
   - sudo apt-get update
 ```
-   б. Подготовить [ansible](https://www.ansible.com/) конфигурации, можно воспользоваться, например [Kubespray](https://kubernetes.io/docs/setup/production-environment/tools/kubespray/)
+   б. Подготовить [ansible](https://www.ansible.com/) конфигурации, можно воспользоваться, например [Kubespray](https://kubespray.io/#/)
   
 Скачиваем репозиторий с `Kubespray`
 ```
