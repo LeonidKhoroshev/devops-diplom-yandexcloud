@@ -527,8 +527,8 @@ docker push leonid1984/nginx-static:latest
 
 Ожидаемый результат:
 
-1. Git репозиторий с тестовым приложением и Dockerfile.
-2. Регистри с собранным docker image. В качестве регистри может быть DockerHub или [Yandex Container Registry](https://cloud.yandex.ru/services/container-registry), созданный также с помощью terraform.
+1. [Git репозиторий](https://github.com/LeonidKhoroshev/nginx-static) с тестовым приложением и [Dockerfile](https://github.com/LeonidKhoroshev/nginx-static/blob/main/Dockerfile).
+2. Регистри с собранным [docker image](https://hub.docker.com/repository/docker/leonid1984/nginx-static/general). В качестве регистри может быть DockerHub или Yandex Container Registry, созданный также с помощью terraform.
 
 ---
 ### Подготовка cистемы мониторинга и деплой приложения
