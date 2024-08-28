@@ -176,18 +176,6 @@ terraform state list
 1. Terraform сконфигурирован и создание инфраструктуры посредством Terraform возможно без дополнительных ручных действий.
 2. Полученная конфигурация инфраструктуры является предварительной, поэтому в ходе дальнейшего выполнения задания возможны изменения.
 
-В качестве промежуточного итога прилагаю terraform манифест и файлы, необходимые для создания инфраструктуры, описанной выше:
-
-[main.tf](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/terraform/main.tf)
-
-[variables.tf](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/terraform/variables.tf)
-
-[providers.tf](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/terraform/providers.tf)
-
-[outputs.tf](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/terraform/outputs.tf)
-
-[cloud-init.yaml](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/terraform/cloud-init.yaml)
-
 ---
 ### Создание Kubernetes кластера
 
@@ -468,6 +456,21 @@ cat ~/.kube/config
 ![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom7.png)
 
 ---
+
+В качестве промежуточного итога прилагаю terraform манифест и файлы, необходимые для создания инфраструктуры, описанной выше:
+
+[main.tf](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/terraform/main.tf)
+
+[variables.tf](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/terraform/variables.tf)
+
+[providers.tf](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/terraform/providers.tf)
+
+[outputs.tf](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/terraform/outputs.tf)
+
+[cloud-init.yaml](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/terraform/cloud-init.yaml)
+
+[inventory.ini](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/terraform/inventory.ini)
+
 ### Создание тестового приложения
 
 Для перехода к следующему этапу необходимо подготовить тестовое приложение, эмулирующее основное приложение разрабатываемое вашей компанией.
