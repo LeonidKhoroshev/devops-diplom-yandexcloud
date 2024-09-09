@@ -791,21 +791,104 @@ http://89.169.145.151:32002/
 
 ![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom24.png)
 
+После того как предварительная настройка `Jenkins` произведена, создадим `pipeline` для нашего проекта
+```
+pipeline {
+    agent any  
+
+    environment {
+        DOCKER_HUB_REPO = 'leonid1984/nginx-static'
+        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'  // ID учетных данных Docker Hub в Jenkins
+        KUBECONFIG_CREDENTIALS_ID = 'kubeconfig-credentials'  // ID учетных данных для подключения к Kubernetes в Jenkins
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Получение кода из GitHub
+                git branch: 'main', url: 'https://github.com/LeonidKhoroshev/nginx-static.git'
+            }
+        }
+        
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Получение текущего тега, если есть
+                    def tag = env.GIT_TAG_NAME ?: 'latest'
+                    // Сборка Docker-образа
+                    sh "docker build -t ${DOCKER_HUB_REPO}:${tag} ."
+                }
+            }
+        }
+        
+        stage('Push to Docker Hub') {
+           steps {
+             withCredentials([string(credentialsId: 'docker_hub_pat', variable: 'DOCKER_HUB_PAT')]) {
+               sh """
+               echo $DOCKER_HUB_PAT | docker login -u leonid1984 --password-stdin
+               docker push leonid1984/nginx-static:latest
+               """
+            }
+        }
+    }
+        
+        stage('Deploy to Kubernetes') {
+            when {
+                tag "v*" // Деплой выполняется только при создании тега
+            }
+            steps {
+                script {
+                    withCredentials([file(credentialsId: KUBECONFIG_CREDENTIALS_ID, variable: 'KUBECONFIG')]) {
+                        def tag = env.GIT_TAG_NAME ?: 'latest'
+                        // Применение конфигурации деплоя в Kubernetes
+                        sh """
+                        kubectl set image deployment/nginx-static-deployment nginx-static=${DOCKER_HUB_REPO}:${tag}
+                        kubectl rollout status deployment/nginx-static-deployment
+                        """
+                    }
+                }
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}
+```
+
+Проверяем работу `pipeline`
+
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom25.png)
+
+Сборка прошла успешно
 
 Ожидаемый результат:
 
-1. Интерфейс ci/cd сервиса доступен по http.
-2. При любом коммите в репозитории с тестовым приложением происходит сборка и отправка в регистр Docker образа.
+1. [Интерфейс ci/cd](http://89.169.145.151:32002/) сервиса доступен по http.
+2. При любом коммите в [репозитории с тестовым приложением](https://github.com/LeonidKhoroshev/nginx-static) происходит сборка и отправка в регистр [Docker образа](https://hub.docker.com/r/leonid1984/nginx-static).
 3. При создании тега (например, v1.0.0) происходит сборка и отправка с соответствующим label в регистри, а также деплой соответствующего Docker образа в кластер Kubernetes.
 
 ---
 ## Что необходимо для сдачи задания?
 
-1. Репозиторий с конфигурационными файлами Terraform и готовность продемонстрировать создание всех ресурсов с нуля.
+1. [Репозиторий с конфигурационными файлами Terraform](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/tree/terraform) и готовность продемонстрировать создание всех ресурсов с нуля.
 2. Пример pull request с комментариями созданными atlantis'ом или снимки экрана из Terraform Cloud или вашего CI-CD-terraform pipeline.
-3. Репозиторий с конфигурацией ansible, если был выбран способ создания Kubernetes кластера при помощи ansible.
-4. Репозиторий с Dockerfile тестового приложения и ссылка на собранный docker image.
-5. Репозиторий с конфигурацией Kubernetes кластера.
-6. Ссылка на тестовое приложение и веб интерфейс Grafana с данными доступа.
-7. Все репозитории рекомендуется хранить на одном ресурсе (github, gitlab)
+
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom26.png
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom27.png)
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom28.png)
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom29.png)
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom30.png)
+
+3. [Репозиторий с конфигурацией ansible](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/tree/kubespray), если был выбран способ создания Kubernetes кластера при помощи ansible.
+4. [Репозиторий с Dockerfile](https://github.com/LeonidKhoroshev/nginx-static) тестового приложения и ссылка на собранный [docker image](https://hub.docker.com/r/leonid1984/nginx-static).
+5. Репозиторий с конфигурацией Kubernetes кластера (в моем случае конфигурация кластера задана в репозитории с [kubespray](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/tree/kubespray) в файле [inventory.ini](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/kubespray/inventory/mycluster/inventory.ini) ).
+6. Ссылка на тестовое приложение и [веб интерфейс Grafana](http://89.169.145.151:32000) с данными доступа: логин - `admin` пароль - `prom-operator`.
+7. Все репозитории рекомендуется хранить на одном ресурсе (github, gitlab).
 
