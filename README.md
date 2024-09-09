@@ -684,15 +684,25 @@ kubectl create namespace devops-tools
 ```
 kubectl apply -f serviceAccount.yaml
 ```
-Указываем в `deployment.yaml` том постоянного хранения данных (настройки пользователя, пайплайны и т.д., так как наш кластер использует ради экономии прерываемые виртуальные машины).
+Указываем в `deployment.yaml` тома постоянного хранения данных (настройки пользователя, пайплайны и т.д., так как наш кластер использует ради экономии прерываемые виртуальные машины).
 ```yml
 volumeMounts:
-   - name: jenkins-data
-     mountPath: /var/jenkins_home
+            - name: jenkins-data
+              mountPath: /var/jenkins_home
+            - name: docker-socket
+              mountPath: /var/run/docker.sock
+            - name: docker-bin
+              mountPath: /tmp/docker-bin
+
 volumes:
-   - name: jenkins-data
-     persistentVolumeClaim:
-     claimName: jenkins-pvc
+        - name: jenkins-data
+          persistentVolumeClaim:
+            claimName: jenkins-pvc
+        - name: docker-socket
+          hostPath:
+            path: /var/run/docker.sock
+        - name: docker-bin
+          emptyDir: {}
 ```
 И соответственно создаем требуемый `persistent volume`
 ```yml
@@ -723,15 +733,31 @@ spec:
     requests:
       storage: 1Gi
 ```
-Для корректной работы необходимо создать директорию `/var/jenkins_home` на всех нодах нашего кластера, для чего необходимо в `deployment.yaml` добавить инитконтейнер, создающий даннцю директорию и наделяющую ее соответствующими правами
+Для корректной работы необходимо создать директорию `/var/jenkins_home` на всех нодах нашего кластера, для чего необходимо в `deployment.yaml` добавить инитконтейнер, устанавливающий `docker` и `git`
 ```yml
- initContainers:
-   - name: init-chown-data
-     image: alpine
-     command: ['sh', '-c', 'mkdir -p /var/jenkins_home && chown -R 1000:1000 /var/jenkins_home']
-     volumeMounts:
-     - name: jenkins-data
-       mountPath: /var/jenkins_home
+initContainers:
+        - name: install-docker-git
+          image: ubuntu:22.04
+          command:
+          - sh
+          - -c
+          - |
+            apt-get update && \
+            apt-get install -y curl gnupg && \
+            curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
+            echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian bullseye stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+            apt-get update && \
+            apt-get install -y docker-ce-cli && \
+            mkdir -p /tmp/docker-bin && \
+            cp /usr/bin/docker /tmp/docker-bin/docker
+            apt-get install -y git
+          volumeMounts:
+          - name: docker-bin
+            mountPath: /tmp/docker-bin
+          - name: jenkins-data
+            mountPath: /var/jenkins_home
+          - name: docker-socket
+            mountPath: /var/run/docker.sock
 ```
 
 Применяем изменения и проверяем успешный запуск `Jenkins`
