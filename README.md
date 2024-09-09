@@ -880,7 +880,7 @@ pipeline {
 1. [Репозиторий с конфигурационными файлами Terraform](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/tree/terraform) и готовность продемонстрировать создание всех ресурсов с нуля.
 2. Пример pull request с комментариями созданными atlantis'ом или снимки экрана из Terraform Cloud или вашего CI-CD-terraform pipeline.
 
-![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom26.png
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom26.png)
 ![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom27.png)
 ![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom28.png)
 ![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom29.png)
