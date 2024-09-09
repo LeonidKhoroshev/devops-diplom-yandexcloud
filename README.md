@@ -773,7 +773,15 @@ http://89.169.145.151:32002/
 
 ![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom20.png)
 
+Далее настраиваем агенты для сборки на основе `Kubernetes pod`. Для этого сначала установим плагин `Kubernetes` для `Jenkins`, далее создаем новое облако `Kubernetes`, в настройках прописываем пространство имен `devops-tools`, в котором развернут под с `Jenkins` и также через графический интерфейс тестируем соединение с кластером.
 
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom21.png)
+
+Убедившись в наличии подключения, добавляем шаблон пода, который будет являться нашим сборочным агентом. Задаем название `jenkins-agent`, указываем пространство имен и `image` [inbound-agent](https://hub.docker.com/r/jenkins/inbound-agent)
+
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom22.png)
+
+Подробная инструкция по созданию и настройке агента доступна по [ссылке](https://scmax.ru/articles/707733/). Поскольку после публикации статьи в Jenkins прошел ряд обновлений, то не вся информация в ней актуальна (например названия плагинов), но в целом описанный метод является рабочим (на период сентября 2024 года).
 
 Ожидаемый результат:
 
