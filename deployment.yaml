@@ -14,9 +14,33 @@ spec:
         app: jenkins-server
     spec:
       securityContext:
-            fsGroup: 1000 
-            runAsUser: 1000
+        fsGroup: 115
+        runAsUser: 0
       serviceAccountName: jenkins-admin
+      initContainers:
+        - name: install-docker-git
+          image: ubuntu:22.04
+          command:
+          - sh
+          - -c
+          - |
+            apt-get update && \
+            apt-get install -y curl gnupg && \
+            curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
+            echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian bullseye stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+            apt-get update && \
+            apt-get install -y docker-ce-cli && \
+            mkdir -p /tmp/docker-bin && \
+            cp /usr/bin/docker /tmp/docker-bin/docker
+            apt-get install -y git
+          volumeMounts:
+          - name: docker-bin
+            mountPath: /tmp/docker-bin
+          - name: jenkins-data
+            mountPath: /var/jenkins_home
+          - name: docker-socket
+            mountPath: /var/run/docker.sock
+
       containers:
         - name: jenkins
           image: jenkins/jenkins:lts
@@ -50,8 +74,17 @@ spec:
             failureThreshold: 3
           volumeMounts:
             - name: jenkins-data
-              mountPath: /var/jenkins_home         
+              mountPath: /var/jenkins_home
+            - name: docker-socket
+              mountPath: /var/run/docker.sock
+            - name: docker-bin
+              mountPath: /tmp/docker-bin
+
       volumes:
         - name: jenkins-data
           persistentVolumeClaim:
-              claimName: jenkins-pv-claim
+            claimName: jenkins-pvc
+        - name: docker-socket
+          hostPath:
+            path: /var/run/docker.sock
+        - name: docker-b
