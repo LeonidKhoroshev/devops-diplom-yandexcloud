@@ -918,3 +918,16 @@ pipeline {
 6. Ссылка на тестовое приложение и [веб интерфейс Grafana](http://89.169.145.151:32000) с данными доступа: логин - `admin` пароль - `prom-operator`.
 7. Все репозитории рекомендуется хранить на одном ресурсе (github, gitlab).
 
+Дополнительно прилагаю файлы для развертывания `Jenkins` в `k8s`
+
+[deployment.yaml](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/jenkins/deployment.yaml)
+
+[namespace.yaml](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/jenkins/namespace.yaml)
+
+[pv.yaml](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/jenkins/pv.yaml)
+
+[pvc.yaml](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/jenkins/pvc.yaml)
+
+[service.yaml](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/jenkins/service.yaml)
+
+[serviceAccount.yaml](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/jenkins/serviceAccount.yaml)
