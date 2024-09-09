@@ -783,6 +783,15 @@ http://89.169.145.151:32002/
 
 Подробная инструкция по созданию и настройке агента доступна по [ссылке](https://scmax.ru/articles/707733/). Поскольку после публикации статьи в Jenkins прошел ряд обновлений, то не вся информация в ней актуальна (например названия плагинов), но в целом описанный метод является рабочим (на период сентября 2024 года).
 
+Также для автоматизации нашего проекта необходима организация доступа через токен к `DockerHub`, Получаем токен в личном кабинете на `https://app.docker.com`
+
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom23.png)
+
+Сохраняем токен в `credentials`
+
+![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom24.png)
+
+
 Ожидаемый результат:
 
 1. Интерфейс ci/cd сервиса доступен по http.
