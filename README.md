@@ -586,7 +586,7 @@ helm upgrade prometheus prometheus-community/kube-prometheus-stack -n monitoring
 
 ![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom10.png)
 
-Видим, что из кластера почтупают данные, но в пока мы не деплоили наше приложение, мониторинг не слишком информативен ввиду отсутствия рабочей нагрузки
+Видим, что из кластера поступают данные, но в пока мы не деплоили наше приложение, мониторинг не слишком информативен ввиду отсутствия рабочей нагрузки
 
 ![Alt_text](https://github.com/LeonidKhoroshev/devops-diplom-yandexcloud/blob/main/screenshots/diplom11.png)
 
