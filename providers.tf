@@ -13,7 +13,7 @@ terraform {
     bucket                      = "diplom-project-khoroshevlv"
     region                      = "ru-central1"
     key                         = "terraform.tfstate"
-    access_key                  = "YCAJEHlUuBzSibq9RPFIUIo9s"
+    access_key                  = "YC//////////UIo9s"
     secret_key                  = "YCO..................AhxW"
     skip_region_validation      = true
     skip_credentials_validation = true
